@@ -1,8 +1,10 @@
 package cleancode.minesweeper.tobe;
 
-public class AppException extends RuntimeException{
+public class GameException extends RuntimeException{
     // 프로그램에서 의도한 에러
-    public AppException(String message){
+    public GameException(String message){
         super(message);
     }
+
+
 }
