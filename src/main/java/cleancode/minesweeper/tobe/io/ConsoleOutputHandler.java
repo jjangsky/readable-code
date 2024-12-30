@@ -1,6 +1,5 @@
 package cleancode.minesweeper.tobe.io;
 
-import cleancode.minesweeper.tobe.Cell;
 import cleancode.minesweeper.tobe.GameBoard;
 
 import java.util.List;

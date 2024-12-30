@@ -1,5 +1,9 @@
 package cleancode.minesweeper.tobe;
 
+import cleancode.minesweeper.tobe.cell.Cell;
+import cleancode.minesweeper.tobe.cell.EmptyCell;
+import cleancode.minesweeper.tobe.cell.LandMineCell;
+import cleancode.minesweeper.tobe.cell.NumberCell;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 
 import java.util.Arrays;
@@ -22,18 +26,18 @@ public class GameBoard {
     }
 
     public void initializeGame() {
-        int rowSize = board.length;
-        int colSize = board[0].length;
+        int rowSize = getRowSize();
+        int colSize = getColSize();
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-                board[row][col] = Cell.create();
+                board[row][col] = new EmptyCell();
             }
         }
         for (int i = 0; i < getLandMineCount; i++) {
             int landMineCol = new Random().nextInt(colSize);
             int landMineRow = new Random().nextInt(rowSize);
-            Cell landMineCell = findCell(landMineRow, landMineCol);
-            landMineCell.turnOnLandMine();
+            LandMineCell landMineCell = new LandMineCell();
+            board[landMineRow][landMineCol] = landMineCell;
         }
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
@@ -41,8 +45,12 @@ public class GameBoard {
                     continue;
                 }
                 int count = countNearByLandMines(row, col);
-                Cell cell = findCell(row, col);
-                cell.updateNearbyLandMineCount(count);
+                if(count == 0){
+                    continue;
+                }
+                // 셀의 count update가 아닌 생성자에서 바로 받기
+                NumberCell numberCell = new NumberCell(count);
+                board[row][col] = numberCell;
             }
         }
     }

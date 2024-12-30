@@ -8,9 +8,6 @@ import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 public class Minesweeper {
 
     public static final char BASE_CHAR_FOR_COL = 'a';
-//    public static final int BOARD_ROW_SIZE = 8;
-//    public static final int BOARD_COL_SIZE = 10;
-//    private final GameBoard gameBoard = new GameBoard(BOARD_ROW_SIZE, BOARD_COL_SIZE);
     private final GameBoard gameBoard;
     private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
