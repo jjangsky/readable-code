@@ -3,12 +3,10 @@ package cleancode.minesweeper.tobe;
 import cleancode.minesweeper.tobe.cell.*;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Stream;
 
 
 public class GameBoard {
@@ -27,34 +25,42 @@ public class GameBoard {
     }
 
     public void initializeGame() {
-        int rowSize = getRowSize();
-        int colSize = getColSize();
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < colSize; col++) {
-                board[row][col] = new EmptyCell();
+        CellPositions cellPositions = CellPositions.form(board);
+
+        initializeEmptyCells(cellPositions);
+
+        List<CellPosition> landMinePositions =  cellPositions.extractRandomPositions(getLandMineCount);
+        initializeLandMineCells(landMinePositions);
+
+        List<CellPosition> numberPositionsCandidates = cellPositions.subtract(landMinePositions);
+        initializeNumberCells(numberPositionsCandidates);
+    }
+
+    private void initializeNumberCells(List<CellPosition> numberPositionsCandidates) {
+        for(CellPosition candidatePosition : numberPositionsCandidates){
+
+            int count = countNearByLandMines(candidatePosition);
+            if(count != 0){
+                updateCellAt(candidatePosition, new NumberCell(count));
             }
         }
-        for (int i = 0; i < getLandMineCount; i++) {
-            int landMineCol = new Random().nextInt(colSize);
-            int landMineRow = new Random().nextInt(rowSize);
-            LandMineCell landMineCell = new LandMineCell();
-            board[landMineRow][landMineCol] = landMineCell;
+    }
+
+    private void initializeLandMineCells(List<CellPosition> landMinePositions) {
+        for(CellPosition position : landMinePositions){
+            updateCellAt(position, new LandMineCell());
         }
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < colSize; col++) {
-                CellPosition cellPosition = CellPosition.of(row, col);
-                if (!isLandMineCell(cellPosition)) {
-                    continue;
-                }
-                int count = countNearByLandMines(cellPosition);
-                if(count == 0){
-                    continue;
-                }
-                // 셀의 count update가 아닌 생성자에서 바로 받기
-                NumberCell numberCell = new NumberCell(count);
-                board[row][col] = numberCell;
-            }
+    }
+
+    private void initializeEmptyCells(CellPositions cellPositions) {
+        List<CellPosition> allPositions = cellPositions.getPositions();
+        for(CellPosition position : allPositions){
+            updateCellAt(position, new EmptyCell());
         }
+    }
+
+    private void updateCellAt(CellPosition position, Cell cell) {
+        board[position.getRowIndex()][position.getColIndex()] = cell;
     }
 
     public int getRowSize(){
@@ -190,12 +196,8 @@ public class GameBoard {
     }
 
     public  boolean isAllCellChecked() {
-        return Arrays.stream(board)
-                .flatMap(stringArr -> Arrays.stream(stringArr))
-                .allMatch(Cell::isChecked); // -> 모든 Cell이 다 체크 되었는지 확인해
-
-        // `.equals` 에 대해서는 npe가 발생할 수 있음 -> stream 객체가 검증되지 않은 상태
-        // 그렇기 때문에 .equals 메소드를 호출하는 대상은 항상 null이 아닌 상수에서 호출하는게 좋음
+        Cells cells = Cells.from(board);
+        return cells.isAllChecked();
     }
 
 }
