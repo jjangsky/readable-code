@@ -37,13 +37,13 @@ public class EmptyCell implements Cell {
     }
 
     @Override
-    public String getSigh() {
+    public CellSnapshot getSnapshot() {
         if(cellState.isOpened()){
-            return  EMPTY_SIGN;
+            return  CellSnapshot.ofEmpty();
         }
         if(cellState.isFlagged()){
-            return FLAG_SIGN;
+            return CellSnapshot.ofFlag();
         }
-        return UNCHECKED_SIGN;
+        return CellSnapshot.ofUnchecked();
     }
 }

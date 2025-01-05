@@ -130,7 +130,7 @@ public class GameBoard {
 
     public String getSign(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
-        return cell.getSigh();
+        return cell.getSnapshot();
     }
 
     private Cell findCell(CellPosition cellPosition) {
@@ -200,5 +200,9 @@ public class GameBoard {
         return cells.isAllChecked();
     }
 
+    public CellSnapshot getSnapshot(CellPosition cellPosition) {
+        Cell cell = findCell(cellPosition);
+        return cell.getSnapshot();
+    }
 }
 

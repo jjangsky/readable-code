@@ -18,5 +18,5 @@ public interface Cell {
 
     boolean hasLandMineCount();
 
-    String getSigh();
+    CellSnapshot getSnapshot();
 }
