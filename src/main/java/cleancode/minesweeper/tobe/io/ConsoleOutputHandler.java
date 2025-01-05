@@ -4,6 +4,7 @@ import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.cell.Cell;
 import cleancode.minesweeper.tobe.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
+import cleancode.minesweeper.tobe.io.sign.*;
 import cleancode.minesweeper.tobe.position.CellPosition;
 
 import java.util.List;
@@ -11,10 +12,7 @@ import java.util.stream.IntStream;
 
 public class ConsoleOutputHandler implements OutputHandler{
 
-    private static final String FLAG_SIGN = "⚑";
-    private static final String UNCHECKED_SIGN = "□";
-    private static final String LAND_MINE_SIGN = "☼";
-    private static final String EMPTY_SIGN = "■";
+    private final CellSignFinder cellSignFinder = new CellSignFinder();
 
     @Override
     public void showGameStartComments() {
@@ -35,7 +33,9 @@ public class ConsoleOutputHandler implements OutputHandler{
                 CellPosition cellPosition = CellPosition.of(row, col);
 
                 CellSnapshot snapshot = board.getSnapshot(cellPosition);
-                String cellSign = decideCellSignFrom(snapshot);
+//                String cellSign = cellSignFinder.findCellSignFrom(snapshot);
+                String cellSign = CellSignProvider.findCellSignFrom(snapshot);
+//
 
                 System.out.println(snapshot + "");
 
@@ -48,25 +48,47 @@ public class ConsoleOutputHandler implements OutputHandler{
         System.out.println();
     }
 
-    private String decideCellSignFrom(CellSnapshot snapshot) {
-        CellSnapshotStatus status = snapshot.getStatus();
-        if(status == CellSnapshotStatus.EMPTY){
-            return EMPTY_SIGN;
+//    private String decideCellSignFrom(CellSnapshot snapshot) {
+//        CellSignFinder cellSignFinder = new CellSignFinder();
+//        return cellSignFinder.findCellSignFrom(snapshot);
+//        CellSnapshotStatus status = snapshot.getStatus();
+//        List<CellSignProvidable> cellSignProviders = List.of(
+//                new EmptyCellSignProvider(),
+//                new FlagCellSignProvider(),
+//                new LandMineCellSignProvider(),
+//                new NumberCellSignProvider(),
+//                new UnCheckedCellSignProvider()
+//        );
+//        return cellSignProviders.stream()
+//                .filter(provider -> provider.supports(snapshot))
+//                .findFirst()
+//                .map(provider -> provider.provide(snapshot))
+//                .orElseThrow(() -> new IllegalArgumentException("확인할 수 없는 셀 입니다."));
+
+
+        /*if(status == CellSnapshotStatus.EMPTY){
+            EmptyCellSignProvider cellSignProvider = new EmptyCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if(status == CellSnapshotStatus.FLAG){
-            return FLAG_SIGN;
+            FlagCellSignProvider cellSignProvider = new FlagCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if(status == CellSnapshotStatus.LAND_MINE){
-            return LAND_MINE_SIGN;
+            LandMineCellSignProvider cellSignProvider = new LandMineCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if(status == CellSnapshotStatus.NUMBER){
-            return String.valueOf(snapshot.getNearbyLandMineCount());
+            NumberCellSignProvider cellSignProvider = new NumberCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         if(status == CellSnapshotStatus.UNCHECKED){
-            return UNCHECKED_SIGN;
+            UnCheckedCellSignProvider cellSignProvider = new UnCheckedCellSignProvider();
+            return cellSignProvider.provide(snapshot);
         }
         throw new IllegalArgumentException("확인할 수 없는 셀 입니다.");
-    }
+    }*/
+//    }
 
     private String generateColAlphabets(GameBoard board) {
         List<String> alphabets =  IntStream.range(0, board.getColSize())

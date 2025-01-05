@@ -37,4 +37,8 @@ public class CellSnapshot {
     public CellSnapshotStatus getStatus() {
         return status;
     }
+
+    public boolean isSameStatus(CellSnapshotStatus cellSnapshotStatus) {
+        return this.status == cellSnapshotStatus;
+    }
 }
