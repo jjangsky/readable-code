@@ -15,7 +15,10 @@ public class GameBoard {
     private Cell[][] board;
     private final int getLandMineCount;
 
+    private GameStatus gameStatus;
+
     public GameBoard(GameLevel gameLevel){
+        initializeGameStatus();
         int rowSize = gameLevel.getRowSize();
         int colSize = gameLevel.getColSize();
         board = new Cell[rowSize][colSize];
@@ -25,6 +28,7 @@ public class GameBoard {
     }
 
     public void initializeGame() {
+        initializeGameStatus();
         CellPositions cellPositions = CellPositions.form(board);
 
         initializeEmptyCells(cellPositions);
@@ -34,6 +38,10 @@ public class GameBoard {
 
         List<CellPosition> numberPositionsCandidates = cellPositions.subtract(landMinePositions);
         initializeNumberCells(numberPositionsCandidates);
+    }
+
+    private void initializeGameStatus() {
+        gameStatus = GameStatus.IN_PROGRESS;
     }
 
     private void initializeNumberCells(List<CellPosition> numberPositionsCandidates) {
@@ -128,11 +136,6 @@ public class GameBoard {
                 || cellPosition.isColIndexMoreThenOrEqual(colSize);
     }
 
-    public String getSign(CellPosition cellPosition) {
-        Cell cell = findCell(cellPosition);
-        return cell.getSnapshot();
-    }
-
     private Cell findCell(CellPosition cellPosition) {
         return board[cellPosition.getRowIndex()][cellPosition.getColIndex()];
     }
@@ -140,9 +143,11 @@ public class GameBoard {
     public void flagAt(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         cell.flag();
+
+        checkIfGameIsOver();
     }
 
-    public void openAt(CellPosition cellPosition) {
+    public void openOneCellAt(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         cell.open();
     }
@@ -158,7 +163,7 @@ public class GameBoard {
             return;
         }
 
-        openAt(cellPosition);
+        openOneCellAt(cellPosition);
 
         if (doesCellHaveLandMineCount(cellPosition)) {
             return;
@@ -203,6 +208,43 @@ public class GameBoard {
     public CellSnapshot getSnapshot(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         return cell.getSnapshot();
+    }
+
+    public boolean isInProgress() {
+        return gameStatus == GameStatus.IN_PROGRESS;
+    }
+
+    private  void checkIfGameIsOver() {
+        if (isAllCellChecked()) {
+            changeGameStatusToWin();
+        }
+    }
+
+    private  void changeGameStatusToWin() {
+        gameStatus = GameStatus.WIN;
+    }
+
+    public void openAt(CellPosition cellInput) {
+        if (isLandMineCell(cellInput)) {
+            openOneCellAt(cellInput);
+            changeGameStatusToLose();
+            return;
+        }
+        openSurroundedCells(cellInput);
+        checkIfGameIsOver();
+
+    }
+
+    private void changeGameStatusToLose() {
+        gameStatus = GameStatus.LOSE;
+    }
+
+    public boolean isWinStatus() {
+        return gameStatus == GameStatus.WIN;
+    }
+
+    public boolean isLoseStatus() {
+        return gameStatus == GameStatus.LOSE;
     }
 }
 
