@@ -42,6 +42,13 @@ public class OutputHandler {
         System.out.println("1. 예 | 2. 아니오");
     }
 
+    /**
+     * null 값 넘겨주는거 안이뻐서 오버로딩을 활용
+     */
+    public void showPassOrderSummary(StudyCafePass selectedPass) {
+        showPassOrderSummary(selectedPass, null);
+    }
+
     public void showPassOrderSummary(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
         System.out.println();
         System.out.println("이용 내역");
