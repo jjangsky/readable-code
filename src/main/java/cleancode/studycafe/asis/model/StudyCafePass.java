@@ -7,7 +7,7 @@ public class StudyCafePass {
     private final int price;
     private final double discountRate;
 
-    private StudyCafePass(StudyCafePassType passType, int duration, int price, double discountRate) {
+    public StudyCafePass(StudyCafePassType passType, int duration, int price, double discountRate) {
         this.passType = passType;
         this.duration = duration;
         this.price = price;

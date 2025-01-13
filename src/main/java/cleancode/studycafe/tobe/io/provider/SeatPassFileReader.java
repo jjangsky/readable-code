@@ -1,8 +1,9 @@
-package cleancode.studycafe.tobe.io;
+package cleancode.studycafe.tobe.io.provider;
 
-import cleancode.studycafe.tobe.model.pass.*;
-import cleancode.studycafe.tobe.model.pass.locker.StudyCafeLockerPass;
-import cleancode.studycafe.tobe.model.pass.locker.StudyCafeLockerPasses;
+import cleancode.studycafe.tobe.model.pass.StudyCafePassType;
+import cleancode.studycafe.tobe.model.pass.StudyCafeSeatPass;
+import cleancode.studycafe.tobe.model.pass.StudyCafeSeatPasses;
+import cleancode.studycafe.tobe.provider.SeatPassProvider;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,9 +11,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudyCafeFileHandler{
-
-    public StudyCafeSeatPasses readStudyCafePasses() {
+public class SeatPassFileReader implements SeatPassProvider {
+    @Override
+    public StudyCafeSeatPasses getSeatPasses() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("src/main/resources/cleancode/studycafe/pass-list.csv"));
             List<StudyCafeSeatPass> studyCafeSeatPasses = new ArrayList<>();
